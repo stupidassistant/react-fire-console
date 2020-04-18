@@ -74,7 +74,7 @@ function Content(props: ContentProps) {
       </AppBar>
       <div className={classes.contentWrapper}>
         <Typography color="textSecondary" align="center">
-          No users for this project yet
+          No users for this project yet2
         </Typography>
       </div>
     </Paper>

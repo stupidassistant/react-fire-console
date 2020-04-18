@@ -122,7 +122,7 @@ function Header(props: HeaderProps) {
         position="static"
         elevation={0}
       >
-        <Tabs value={0} textColor="inherit">
+        <Tabs value={0} textColor="inherit" variant="scrollable">
           <Tab textColor="inherit" label="Users" />
           <Tab textColor="inherit" label="Sign-in method" />
           <Tab textColor="inherit" label="Templates" />
