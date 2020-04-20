@@ -31,6 +31,7 @@ class NavTabs extends React.Component<Props> {
         value={history.location.pathname}
         onChange={this.handleCallToRouter}
         textColor="inherit"
+        scrollButtons="auto"
         variant="scrollable"
       >
         {
