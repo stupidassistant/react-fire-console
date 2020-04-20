@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rimraf ./lib && tsc",
     "prepare": "yarn build",
-    "update": "npm version patch -m \"New version ready.\";npm publish",
+    "update": "npm version patch -m \"New version ready.\";npm publish"
   },
   "author": "",
   "license": "ISC",
