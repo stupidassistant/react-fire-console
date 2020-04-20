@@ -7,18 +7,34 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import HomeIcon from '@material-ui/icons/Home';
 import { Omit } from '@material-ui/types';
+import { HeaderConfig } from './Header';
+
+import {
+  Link
+} from "react-router-dom";
+
+export type PageConfig = {
+  id: string,
+  icon: JSX.Element,
+  component?: JSX.Element,
+  header: HeaderConfig,
+  tabs?: {
+    uri: string,
+    label: string,
+  }[],
+  uri?: string
+}
 
 export type NavigatorConfig = {
-  id: string,
-  children: {
+  mainPage: PageConfig,
+  groups: {
     id: string,
-    icon: JSX.Element,
-    uri: string,
-    component?: JSX.Element
-  }[]
-}[];
+    children: (PageConfig & {
+      uri: string
+    })[]
+  }[];
+}
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -75,19 +91,23 @@ function Navigator(props: NavigatorProps) {
         <ListItem className={clsx(classes.firebase, classes.item, classes.itemCategory)}>
           Paperbase
         </ListItem>
-        <ListItem className={clsx(classes.item, classes.itemCategory)}>
+        <ListItem
+          component={Link}
+          to={'/'} 
+          className={clsx(classes.item, classes.itemCategory)}
+        >
           <ListItemIcon className={classes.itemIcon}>
-            <HomeIcon />
+            {navigatorConfig.mainPage.icon}
           </ListItemIcon>
           <ListItemText
             classes={{
               primary: classes.itemPrimary,
             }}
           >
-            Project Overview
+            {navigatorConfig.mainPage.id}
           </ListItemText>
         </ListItem>
-        {navigatorConfig.map(({ id, children }) => (
+        {navigatorConfig.groups.map(({ id, children }) => (
           <React.Fragment key={id}>
             <ListItem className={classes.categoryHeader}>
               <ListItemText
@@ -98,10 +118,12 @@ function Navigator(props: NavigatorProps) {
                 {id}
               </ListItemText>
             </ListItem>
-            {children.map(({ id: childId, icon }) => (
+            {children.map(({ id: childId, icon, uri }) => (
               <ListItem
-                key={childId}
                 button
+                key={childId}
+                component={Link}
+                to={uri} 
                 className={clsx(classes.item, false && classes.itemActiveItem)}
               >
                 <ListItemIcon className={classes.itemIcon}>{icon}</ListItemIcon>

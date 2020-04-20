@@ -15,6 +15,15 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useRouteMatch,
+  useParams,
+  Redirect,
+} from "react-router-dom";
+import NavTabs from './NavTabs';
 
 const lightColor = 'rgba(255, 255, 255, 0.7)';
 
@@ -41,12 +50,33 @@ const styles = (theme: Theme) =>
     },
   });
 
+export type HeaderConfig = {
+  title: string,
+  helpUri?: string,
+  docsUri?: string,
+  additionButtons?: {
+    uri: string,
+    label: string
+  }[]
+};
+
 interface HeaderProps extends WithStyles<typeof styles> {
+  headerConfig: HeaderConfig,
+  tabs?: {
+    label: string,
+    uri: string
+  }[],
+  uri: string,
   onDrawerToggle: () => void;
 }
 
 function Header(props: HeaderProps) {
-  const { classes, onDrawerToggle } = props;
+  const { classes, onDrawerToggle, headerConfig, tabs, uri } = props;
+
+  const [url, setUrl] = React.useState<null|string>(null);
+
+  if (url != null)
+    return <Redirect to={url} />
 
   return (
     <React.Fragment>
@@ -66,11 +96,11 @@ function Header(props: HeaderProps) {
               </Grid>
             </Hidden>
             <Grid item xs />
-            <Grid item>
-              <Link className={classes.link} href="#" variant="body2">
+            {headerConfig?.docsUri && <Grid item>
+              <Link className={classes.link} href={headerConfig.docsUri} variant="body2">
                 Go to docs
               </Link>
-            </Grid>
+            </Grid>}
             <Grid item>
               <Tooltip title="Alerts • No alerts">
                 <IconButton color="inherit">
@@ -97,21 +127,23 @@ function Header(props: HeaderProps) {
           <Grid container alignItems="center" spacing={1}>
             <Grid item xs>
               <Typography color="inherit" variant="h5" component="h1">
-                Authentication
+                {headerConfig?.title || "Default Title"}
               </Typography>
             </Grid>
-            <Grid item>
-              <Button className={classes.button} variant="outlined" color="inherit" size="small">
-                Web setup
-              </Button>
-            </Grid>
-            <Grid item>
+            {headerConfig?.additionButtons?.map(({label, uri}) => (
+              <Grid item>
+                <Button className={classes.button} href={uri} variant="outlined" color="inherit" size="small">
+                  {label}
+                </Button>
+              </Grid>
+            ))}
+            {headerConfig?.helpUri && <Grid item>
               <Tooltip title="Help">
-                <IconButton color="inherit">
+                <IconButton color="inherit" href={headerConfig.helpUri}>
                   <HelpIcon />
                 </IconButton>
               </Tooltip>
-            </Grid>
+            </Grid>}
           </Grid>
         </Toolbar>
       </AppBar>
@@ -122,12 +154,15 @@ function Header(props: HeaderProps) {
         position="static"
         elevation={0}
       >
-        <Tabs value={0} textColor="inherit" variant="scrollable">
-          <Tab textColor="inherit" label="Users" />
-          <Tab textColor="inherit" label="Sign-in method" />
-          <Tab textColor="inherit" label="Templates" />
-          <Tab textColor="inherit" label="Usage" />
-        </Tabs>
+        {tabs && <NavTabs
+          root={uri}
+          tabs={[
+            {label: "Users", uri: 'users'},
+            {label: "Sign-in method", uri: 'sign-in-method'},
+            {label: "Templates", uri: 'templates'},
+            {label: "Usage", uri: 'usage'}
+          ]}
+        />}
       </AppBar>
     </React.Fragment>
   );

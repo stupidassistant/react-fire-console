@@ -7,39 +7,22 @@ import {
 } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { NavigatorConfig } from './Navigator';
-import Content from './Content';
-import Header from './Header';
 import theme from '../theme/MuiTheme';
 import Drawer from './Drawer';
+import MainPage from './MainPage';
 import DefaultNavigatorConfig from './DefaultNavigatorConfig';
-
-const drawerWidth = 256;
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 
 const styles = createStyles({
   root: {
     display: 'flex',
     minHeight: '100vh',
-  },
-  drawer: {
-    [theme.breakpoints.up('sm')]: {
-      width: drawerWidth,
-      flexShrink: 0,
-    },
-  },
-  app: {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  main: {
-    flex: 1,
-    padding: theme.spacing(6, 4),
-    background: '#eaeff1',
-  },
-  footer: {
-    padding: theme.spacing(2),
-    background: '#eaeff1',
-  },
+  }
 });
 
 export interface PaperbaseProps extends WithStyles<typeof styles> {
@@ -48,8 +31,7 @@ export interface PaperbaseProps extends WithStyles<typeof styles> {
 
 type State = {
   mobileOpen: boolean
-}
-
+};
 
 class Paperbase extends React.Component<PaperbaseProps, State> {
   constructor(props: PaperbaseProps) {
@@ -67,21 +49,20 @@ class Paperbase extends React.Component<PaperbaseProps, State> {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, navigatorConfig: propsNavigatorConfig } = this.props;
+
+    const navigatorConfig = propsNavigatorConfig || DefaultNavigatorConfig
   
     return (
-      <ThemeProvider theme={theme}>
-        <div className={classes.root}>
-          <CssBaseline />
-          <Drawer open={this.state.mobileOpen} toggleDraw={this.toggleDraw} navigatorConfig={this.props.navigatorConfig || DefaultNavigatorConfig} />
-          <div className={classes.app}>
-            <Header onDrawerToggle={this.toggleDraw} />
-            <main className={classes.main}>
-              <Content />
-            </main>
+      <Router>
+        <ThemeProvider theme={theme}>
+          <div className={classes.root}>
+            <CssBaseline />
+            <Drawer open={this.state.mobileOpen} toggleDraw={this.toggleDraw} navigatorConfig={navigatorConfig} />
+            <MainPage toggleDraw={this.toggleDraw} navigatorConfig={navigatorConfig} />
           </div>
-        </div>
-      </ThemeProvider>
+        </ThemeProvider>
+      </Router>
     );
   }
 }
