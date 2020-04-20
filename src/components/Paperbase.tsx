@@ -1,22 +1,15 @@
 import * as React from 'react';
-import {
-  createStyles,
-  ThemeProvider,
-  withStyles,
-  WithStyles,
-} from '@material-ui/core/styles';
+import { BrowserRouter as Router, Redirect } from "react-router-dom";
+
+import { NavigatorConfig } from '../..';
+
+import { createStyles, ThemeProvider, withStyles, WithStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { NavigatorConfig } from './Navigator';
+
 import theme from '../theme/MuiTheme';
 import Drawer from './Drawer';
 import MainPage from './MainPage';
 import DefaultNavigatorConfig from './DefaultNavigatorConfig';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
 
 const styles = createStyles({
   root: {
@@ -39,7 +32,9 @@ class Paperbase extends React.Component<PaperbaseProps, State> {
 
     this.state = {
       mobileOpen: false
-    }
+    };
+
+    this.toggleDraw = this.toggleDraw.bind(this);
   }
 
   toggleDraw() {
@@ -52,6 +47,9 @@ class Paperbase extends React.Component<PaperbaseProps, State> {
     const { classes, navigatorConfig: propsNavigatorConfig } = this.props;
 
     const navigatorConfig = propsNavigatorConfig || DefaultNavigatorConfig
+
+    if (!navigatorConfig.auth.signedIn && navigatorConfig.auth.autoRedirect)
+      return <Redirect to={navigatorConfig.auth.autoRedirect} />
   
     return (
       <Router>

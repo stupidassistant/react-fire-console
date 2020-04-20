@@ -1,19 +1,14 @@
 import * as React from 'react';
-import {
-  createStyles,
-  withStyles,
-  WithStyles,
-} from '@material-ui/core/styles';
+
+import { NavigatorConfig, PageConfig } from '../..';
+
+import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
+import { Switch, Route, Redirect } from "react-router-dom";
+
 import Content from './Content';
 import Header from './Header';
+
 import theme from '../theme/MuiTheme';
-import { NavigatorConfig, PageConfig } from './Navigator';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
 
 const styles = createStyles({
   app: {
@@ -33,19 +28,33 @@ export interface PaperbaseProps extends WithStyles<typeof styles> {
   navigatorConfig: NavigatorConfig
 }
 
-
 class Paperbase extends React.Component<PaperbaseProps> {
   renderScreen(config: PageConfig, exact: boolean=false) {
-    const { classes } = this.props;
-    const { uri, component, header, tabs } = config;
+    const { classes, navigatorConfig, toggleDraw } = this.props;
+    const { uri, header, tabs, rootRedirectsTo, component } = config;
 
     let fixedUri = uri || '/';
     return (
       <Route path={fixedUri} exact={exact}>
         <div className={classes.app}>
-          <Header uri={fixedUri} onDrawerToggle={this.props.toggleDraw} headerConfig={header} tabs={tabs} />
+          <Header uri={fixedUri} toggleDraw={toggleDraw} headerConfig={header} tabs={tabs} auth={navigatorConfig.auth} />
           <main className={classes.main}>
-            <Content />
+            {
+              rootRedirectsTo &&
+                <Route path={fixedUri} exact>
+                  <Redirect to={fixedUri + rootRedirectsTo} />
+                </Route>
+            }
+            {
+              tabs ? 
+                tabs.map(tab => {
+                  return (
+                  <Route path={fixedUri + tab.uri}>
+                    {tab.component || <Content label={tab.label} />}
+                  </Route>
+                )}) : 
+                component || <Content label={header.title} />
+            }
           </main>
         </div>
       </Route>

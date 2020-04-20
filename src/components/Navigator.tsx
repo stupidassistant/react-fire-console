@@ -1,5 +1,9 @@
 import * as React from 'react';
 import clsx from 'clsx';
+import { RouteComponentProps, withRouter, Link } from "react-router-dom";
+
+import { NavigatorConfig } from '../..';
+
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import Drawer, { DrawerProps } from '@material-ui/core/Drawer';
@@ -8,33 +12,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { Omit } from '@material-ui/types';
-import { HeaderConfig } from './Header';
 
-import {
-  Link
-} from "react-router-dom";
-
-export type PageConfig = {
-  id: string,
-  icon: JSX.Element,
-  component?: JSX.Element,
-  header: HeaderConfig,
-  tabs?: {
-    uri: string,
-    label: string,
-  }[],
-  uri?: string
-}
-
-export type NavigatorConfig = {
-  mainPage: PageConfig,
-  groups: {
-    id: string,
-    children: (PageConfig & {
-      uri: string
-    })[]
-  }[];
-}
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -78,22 +56,24 @@ const styles = (theme: Theme) =>
     },
   });
 
-export interface NavigatorProps extends Omit<DrawerProps, 'classes'>, WithStyles<typeof styles> {
-  navigatorConfig: NavigatorConfig
+export interface NavigatorProps extends RouteComponentProps, Omit<DrawerProps, 'classes'>, WithStyles<typeof styles> {
+  navigatorConfig: NavigatorConfig,
+  toggleDraw?: () => void
 }
 
 function Navigator(props: NavigatorProps) {
-  const { classes, navigatorConfig, ...other } = props;
+  const { classes, navigatorConfig, toggleDraw, history, ...other } = props;
 
   return (
     <Drawer variant="permanent" {...other}>
       <List disablePadding>
         <ListItem className={clsx(classes.firebase, classes.item, classes.itemCategory)}>
-          Paperbase
+          {navigatorConfig.title}
         </ListItem>
         <ListItem
           component={Link}
           to={'/'} 
+          onClick={toggleDraw}
           className={clsx(classes.item, classes.itemCategory)}
         >
           <ListItemIcon className={classes.itemIcon}>
@@ -123,8 +103,9 @@ function Navigator(props: NavigatorProps) {
                 button
                 key={childId}
                 component={Link}
-                to={uri} 
-                className={clsx(classes.item, false && classes.itemActiveItem)}
+                to={uri}
+                onClick={toggleDraw}
+                className={clsx(classes.item, history.location.pathname.indexOf(uri) == 0 && classes.itemActiveItem)}
               >
                 <ListItemIcon className={classes.itemIcon}>{icon}</ListItemIcon>
                 <ListItemText
@@ -144,4 +125,4 @@ function Navigator(props: NavigatorProps) {
   );
 }
 
-export default withStyles(styles)(Navigator);
+export default withStyles(styles)(withRouter(Navigator));

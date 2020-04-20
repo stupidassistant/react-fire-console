@@ -1,8 +1,9 @@
 import * as React from "react";
 
+import { RouteComponentProps, withRouter } from "react-router-dom";
+
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
-import { RouteComponentProps, withRouter } from "react-router-dom";
 
 interface Props extends RouteComponentProps<any> {
   root: string,
@@ -24,10 +25,10 @@ class NavTabs extends React.Component<Props> {
   }
 
   render() {
-    const { tabs } = this.props;
+    const { tabs, history } = this.props;
     return (
       <Tabs
-        value={this.props.history.location.pathname}
+        value={history.location.pathname}
         onChange={this.handleCallToRouter}
         textColor="inherit"
         variant="scrollable"
@@ -37,7 +38,7 @@ class NavTabs extends React.Component<Props> {
             <Tab
               textColor="inherit"
               label={label}
-              value={`${this.props.root}/${uri}`}
+              value={this.props.root + uri}
             />
           ))
         }

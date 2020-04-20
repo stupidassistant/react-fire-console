@@ -1,12 +1,12 @@
 import * as React from 'react';
-import {
-  createStyles,
-  withStyles,
-  WithStyles,
-} from '@material-ui/core/styles';
+
+import { NavigatorConfig } from '../..';
+
+import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Hidden from '@material-ui/core/Hidden';
-import Navigator, { NavigatorConfig } from './Navigator';
+
+import Navigator  from './Navigator';
 import theme from '../theme/MuiTheme';
 
 const drawerWidth = 256;
@@ -28,7 +28,7 @@ export interface DrawerProps extends WithStyles<typeof styles> {
 
 class Drawer extends React.Component<DrawerProps> {
   render() {
-    const { classes, navigatorConfig } = this.props;
+    const { classes, navigatorConfig, toggleDraw, open } = this.props;
 
     return (
       <React.Fragment>
@@ -38,9 +38,10 @@ class Drawer extends React.Component<DrawerProps> {
             <Navigator
               PaperProps={{ style: { width: drawerWidth } }}
               variant="temporary"
-              open={this.props.open}
-              onClose={this.props.toggleDraw}
+              open={open}
+              onClose={toggleDraw}
               navigatorConfig={navigatorConfig}
+              toggleDraw={toggleDraw}
             />
           </Hidden>
           <Hidden smDown implementation="css">
