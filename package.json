@@ -5,8 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "rimraf ./lib && tsc",
-    "prepare": "yarn build",
-    "update": "npm version patch -m \"New version ready.\";npm publish"
+    "prepare": "yarn build"
   },
   "author": "",
   "license": "ISC",
