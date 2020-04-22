@@ -1,6 +1,5 @@
 import * as React from 'react';
-
-import { NavigatorConfig } from '../..';
+import { NavigatorConfig } from 'react-fire-console';
 
 import PeopleIcon from '@material-ui/icons/People';
 import DnsRoundedIcon from '@material-ui/icons/DnsRounded';
@@ -12,7 +11,6 @@ import TimerIcon from '@material-ui/icons/Timer';
 import SettingsIcon from '@material-ui/icons/Settings';
 import HomeIcon from '@material-ui/icons/Home';
 import PhonelinkSetupIcon from '@material-ui/icons/PhonelinkSetup';
-import Header from './ui/Header';
 
 const DefaultNavigatorConfig: NavigatorConfig = {
   title: 'react-fire-console',
@@ -26,8 +24,7 @@ const DefaultNavigatorConfig: NavigatorConfig = {
         thin: true,
         transparent: true,
         docsUri: 'https://github.com/stupidassistant/react-fire-console'
-      },
-      component: <Header />
+      }
     }
   },
   auth: {
@@ -242,6 +239,6 @@ const DefaultNavigatorConfig: NavigatorConfig = {
       ]
     }
   ]
-}
+};
 
 export default DefaultNavigatorConfig;

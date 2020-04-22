@@ -1,13 +1,15 @@
 import * as React from 'react';
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
-import { Box, Container, Typography } from '@material-ui/core';
+import { Box, Container, Typography, Button } from '@material-ui/core';
 
 const styles = (theme: Theme) =>
   createStyles({
     header: {
+      padding: 20,
       paddingTop: 48,
       backgroundColor: 'rgb(52, 68, 159)',
-      height: 450
+      height: 450,
+      paddingBottom: 100
     }
   });
 
@@ -18,16 +20,22 @@ function Header(props: HeaderProps) {
 
   return (
     <Box className={classes.header}>
-      <Container
-        maxWidth="md"
-      >
-        <Typography variant="h4">
-          Performance
-        </Typography>
-        <Typography variant="h5">
-          Get actionable insights into your app's performance and the latencies your users experience
-        </Typography>
-      </Container>
+      <Box display="flex" flexDirection='column' justifyContent='center' height='100%'>
+        <Container
+          maxWidth="md"
+          style={{color: 'white'}}
+        >
+          <Typography variant="h3">
+            A/B Testing
+          </Typography>
+          <Typography variant="h6">
+            Run experiments to make key engagement flows more effective
+          </Typography>
+          <Button variant="contained" color="secondary">
+            Create experiment
+          </Button>
+        </Container>
+      </Box>
     </Box>
   );
 }

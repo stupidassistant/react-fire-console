@@ -25,7 +25,9 @@ const styles = (theme: Theme) =>
   createStyles({
     secondaryBar: {
       zIndex: 0,
-      width: '100vw'
+      [theme.breakpoints.down('sm')]: {
+        width: '100vw'
+      }
     },
     menuButton: {
       marginLeft: -theme.spacing(1),
