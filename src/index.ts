@@ -1,1 +1,1 @@
-export * from './components/Paperbase';
+export * from './components/Console';

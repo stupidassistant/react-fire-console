@@ -1,32 +1,56 @@
 import * as React from 'react';
 
-export type HeaderConfig = {
+export type TabbedHeaderConfig = {
   title: string,
   helpUri?: string,
   docsUri?: string,
+  transparent?: boolean,
   additionButtons?: {
     uri: string,
     label: string
   }[],
+  thin?: false
 };
+
+export type ThinHeaderConfig = {
+  docsUri?: string,
+  transparent?: boolean,
+  thin: true
+};
+
+export type HeaderConfig = TabbedHeaderConfig | ThinHeaderConfig;
+
+export type TabbedPageContents = {
+  tabbed: true,
+  header: TabbedHeaderConfig,
+  rootRedirectsTo?: string,
+  tabs: {
+    uri: string,
+    label: string,
+    component?: JSX.Element,
+  }[]
+};
+
+export type SinglePageContents = {
+  tabbed: false,
+  header: ThinHeaderConfig,
+  component?: JSX.Element
+};
+
+export type PageContents = TabbedPageContents | SinglePageContents;
+
+declare const PageContents: PageContents;
 
 export type PageConfig = {
   id: string,
   icon: JSX.Element,
-  header: HeaderConfig,
-  rootRedirectsTo?: string,
-  component?: JSX.Element,
-  tabs?: {
-    uri: string,
-    label: string,
-    component?: JSX.Element,
-  }[],
-  uri?: string
+  uri: string,
+  contents: PageContents
 }
 
 export type NavigatorConfig = {
   title: string,
-  mainPage: PageConfig,
+  mainPage: PageConfig & {uri: '/'},
   auth: {
     signedIn: false,
     autoRedirect?: string,

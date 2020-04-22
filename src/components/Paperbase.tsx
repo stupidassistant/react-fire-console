@@ -9,7 +9,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from '../theme/MuiTheme';
 import Drawer from './Drawer';
 import MainPage from './MainPage';
-import DefaultNavigatorConfig from './DefaultNavigatorConfig';
 
 const styles = createStyles({
   root: {
@@ -19,7 +18,7 @@ const styles = createStyles({
 });
 
 export interface PaperbaseProps extends WithStyles<typeof styles> {
-  navigatorConfig?: NavigatorConfig
+  navigatorConfig: NavigatorConfig
 }
 
 type State = {
@@ -44,9 +43,7 @@ class Paperbase extends React.Component<PaperbaseProps, State> {
   }
 
   render() {
-    const { classes, navigatorConfig: propsNavigatorConfig } = this.props;
-
-    const navigatorConfig = propsNavigatorConfig || DefaultNavigatorConfig
+    const { classes, navigatorConfig } = this.props;
 
     if (!navigatorConfig.auth.signedIn && navigatorConfig.auth.autoRedirect)
       return <Redirect to={navigatorConfig.auth.autoRedirect} />

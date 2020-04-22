@@ -25,6 +25,9 @@ const styles = (theme: Theme) =>
   createStyles({
     secondaryBar: {
       zIndex: 0,
+      [theme.breakpoints.down('sm')]: {
+        width: '100vw'
+      }
     },
     menuButton: {
       marginLeft: -theme.spacing(1),
@@ -61,7 +64,7 @@ interface HeaderProps extends WithStyles<typeof styles> {
     onPress?: () => void,
     href?: string
   },
-  uri: string,
+  uri?: string,
   toggleDraw: () => void;
 }
 
@@ -70,7 +73,7 @@ function Header(props: HeaderProps) {
 
   return (
     <React.Fragment>
-      <AppBar color="primary" position="sticky" elevation={0}>
+      <AppBar color={headerConfig.transparent ? "transparent" : "primary"} position={headerConfig.thin && headerConfig.transparent ? "absolute" : "sticky"} elevation={0}>
         <Toolbar>
           <Grid container spacing={1} alignItems="center">
             <Hidden mdUp>
@@ -112,49 +115,53 @@ function Header(props: HeaderProps) {
           </Grid>
         </Toolbar>
       </AppBar>
-      <AppBar
-        component="div"
-        className={classes.secondaryBar}
-        color="primary"
-        position="static"
-        elevation={0}
-      >
-        <Toolbar>
-          <Grid container alignItems="center" spacing={1}>
-            <Grid item xs>
-              <Typography color="inherit" variant="h5" component="h1">
-                {headerConfig?.title || "Default Title"}
-              </Typography>
-            </Grid>
-            {headerConfig?.additionButtons?.map(({label, uri}) => (
-              <Grid item>
-                <Button className={classes.button} href={uri} variant="outlined" color="inherit" size="small">
-                  {label}
-                </Button>
+      {!headerConfig.thin &&
+        <AppBar
+          component="div"
+          className={classes.secondaryBar}
+          color={headerConfig.transparent ? "transparent" : "primary"}
+          position="static"
+          elevation={0}
+        >
+          <Toolbar>
+            <Grid container alignItems="center" spacing={1}>
+              <Grid item xs>
+                <Typography color="inherit" variant="h5" component="h1">
+                  {headerConfig?.title || "Default Title"}
+                </Typography>
               </Grid>
-            ))}
-            {headerConfig?.helpUri && <Grid item>
-              <Tooltip title="Help">
-                <IconButton color="inherit" href={headerConfig.helpUri}>
-                  <HelpIcon />
-                </IconButton>
-              </Tooltip>
-            </Grid>}
-          </Grid>
-        </Toolbar>
-      </AppBar>
-      <AppBar
-        component="div"
-        className={classes.secondaryBar}
-        color="primary"
-        position="static"
-        elevation={0}
-      >
-        <NavTabs
-          root={uri}
-          tabs={tabs || []}
-        />
-      </AppBar>
+              {headerConfig?.additionButtons?.map(({label, uri}) => (
+                <Grid item>
+                  <Button className={classes.button} href={uri} variant="outlined" color="inherit" size="small">
+                    {label}
+                  </Button>
+                </Grid>
+              ))}
+              {headerConfig?.helpUri && <Grid item>
+                <Tooltip title="Help">
+                  <IconButton color="inherit" href={headerConfig.helpUri}>
+                    <HelpIcon />
+                  </IconButton>
+                </Tooltip>
+              </Grid>}
+            </Grid>
+          </Toolbar>
+        </AppBar>
+      }
+      {!headerConfig.thin && uri &&
+        <AppBar
+          component="div"
+          className={classes.secondaryBar}
+          color={headerConfig.transparent ? "transparent" : "primary"}
+          position="static"
+          elevation={0}
+        >
+          <NavTabs
+            root={uri}
+            tabs={tabs || []}
+          />
+        </AppBar>
+      }
     </React.Fragment>
   );
 }
