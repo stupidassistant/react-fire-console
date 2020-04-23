@@ -17,7 +17,7 @@
   },
   "include": [
     "./src/**/*.tsx",
-    "./src/**/*.ts", "example/DefaultNavigatorConfig.tsx"
+    "./src/**/*.ts"
   ],
   "exclude": [
     "node_modules"
