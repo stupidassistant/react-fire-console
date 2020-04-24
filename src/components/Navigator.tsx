@@ -37,6 +37,11 @@ const styles = (theme: Theme) =>
       paddingTop: theme.spacing(2),
       paddingBottom: theme.spacing(2),
     },
+    logo: {
+      backgroundColor: '#232f3e',
+      boxShadow: '0 -1px 0 #404854 inset',
+      padding: 0
+    },
     firebase: {
       fontSize: 24,
       color: theme.palette.common.white,
@@ -67,8 +72,8 @@ function Navigator(props: NavigatorProps) {
   return (
     <Drawer variant="permanent" {...other}>
       <List disablePadding>
-        <ListItem className={clsx(classes.firebase, classes.item, classes.itemCategory)}>
-          {navigatorConfig.title}
+        <ListItem className={clsx(classes.logo, classes.itemCategory)}>
+          {navigatorConfig.logo}
         </ListItem>
         <ListItem
           component={Link}
@@ -104,7 +109,12 @@ function Navigator(props: NavigatorProps) {
                 key={childId}
                 component={Link}
                 to={uri}
-                onClick={toggleDraw}
+                onClick={(e: any) => {
+                  if (history.location.pathname.indexOf(uri) == 0)
+                    e.preventDefault();
+                  else if (toggleDraw)
+                    toggleDraw()
+                }}
                 className={clsx(classes.item, history.location.pathname.indexOf(uri) == 0 && classes.itemActiveItem)}
               >
                 <ListItemIcon className={classes.itemIcon}>{icon}</ListItemIcon>

@@ -49,7 +49,7 @@ export type PageConfig = {
 }
 
 export type NavigatorConfig = {
-  title: string,
+  logo: JSX.Element,
   mainPage: PageConfig & {uri: '/'},
   auth: {
     signedIn: false,

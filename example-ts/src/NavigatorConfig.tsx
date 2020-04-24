@@ -13,7 +13,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import PhonelinkSetupIcon from '@material-ui/icons/PhonelinkSetup';
 
 const DefaultNavigatorConfig: NavigatorConfig = {
-  title: 'react-fire-console',
+  logo: <img src={'https://dummyimage.com/256x100/fff/aaa'} width='100%' />,
   mainPage: {
     id: 'Project Overview',
     icon: <HomeIcon />,
