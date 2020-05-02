@@ -1,14 +1,16 @@
 import * as React from 'react';
 
-import { NavigatorConfig, PageConfig, PageContents, TabbedHeaderConfig } from '../../index';
+import { NavigatorConfig, GroupConfig, PageConfig } from '../../index';
 
 import { createStyles, withStyles, WithStyles } from '@material-ui/core/styles';
-import { Switch, Route, Redirect } from "react-router-dom";
+import { Route, Redirect } from "react-router-dom";
 
 import Content from './Content';
 import Header from './Header';
 
 import theme from '../theme/MuiTheme';
+import TopBar from './TopBar';
+import TabBar from './TabBar';
 
 const styles = createStyles({
   app: {
@@ -29,68 +31,60 @@ export interface PaperbaseProps extends WithStyles<typeof styles> {
 }
 
 class Paperbase extends React.Component<PaperbaseProps> {
-  
-  renderScreen(pageConfig: PageConfig, exact: boolean=false): JSX.Element {
+  private renderPageConfig(pageConfig: PageConfig, rootURI: string): JSX.Element {
     const { classes, navigatorConfig, toggleDraw } = this.props;
 
-    const contents: PageContents = pageConfig.contents;
-    const fixedUri = pageConfig.uri || '/';
-
-    if (!contents.tabbed)
-      return (
-        <Route path={fixedUri} exact={exact}>
-          <div className={classes.app}>
-            <Header toggleDraw={toggleDraw} headerConfig={contents.header} auth={navigatorConfig.auth} />
-            {contents.header.transparent ?
-              (contents.component || <Content label={'Empty Page'} />)
-            : 
-              <main className={classes.main}>
-                {contents.component || <Content label={'Empty Page'} />}
-              </main>
-            }
-        </div>
-        </Route>
-      );
-    else {      
-      return (
-        <Route path={fixedUri} exact={exact}>
-          <div className={classes.app}>
-            <Header uri={fixedUri} toggleDraw={toggleDraw} headerConfig={contents.header} tabs={contents.tabs} auth={navigatorConfig.auth} />
+    return (
+      <div className={classes.app}>
+        <TopBar navigatorConfig={navigatorConfig} pageConfig={pageConfig} toggleDraw={toggleDraw} />
+        {pageConfig.header && <Header pageConfig={pageConfig} />}
+        {pageConfig.tabbed ? (
+          <React.Fragment>
+            <TabBar pageConfig={pageConfig} rootURI={rootURI} />
+            <Route path={`${rootURI}`} exact={true}>
+              <Redirect to={`${rootURI}${pageConfig.tabs.filter(v => v.label == pageConfig.mainTab)[0].uri}`} />
+            </Route>
             <main className={classes.main}>
-              <Route path={fixedUri} exact>
-                <Redirect to={fixedUri + contents.rootRedirectsTo} />
-              </Route>
               {
-                contents.tabs.map((tab: any) => (
-                  <Route path={fixedUri + tab.uri}>
-                    {tab.component || <Content label={tab.label} />}
+                pageConfig.tabs.map(({component, uri}) => (
+                  <Route path={`${rootURI}${uri}`} exact={true}>
+                    {component || <Content label={'Empty Page'} />}
                   </Route>
                 ))
               }
             </main>
-          </div>
-        </Route>
-      );
-    }
+          </React.Fragment>
+        ) : (
+          <main className={classes.main}>
+            {pageConfig.component || <Content label={'Empty Page'} />}
+          </main>
+        )}
+      </div>
+    );
+  }
+
+  private renderGroups(navigatorConfig: NavigatorConfig): JSX.Element[] {
+    return navigatorConfig.groups.reduce((list: JSX.Element[], groupConfig: GroupConfig, key: number) => {
+      if (groupConfig.type == "page") 
+        list.push(
+          <Route path={groupConfig.uri} exact={true}>
+            {this.renderPageConfig(groupConfig.pageConfig, groupConfig.uri)}
+          </Route>
+        );
+      else if (groupConfig.type == "group")
+        list.push(...groupConfig.children.map(({pageConfig, uri}) => (
+          <Route path={uri}>
+            {this.renderPageConfig(pageConfig, uri)}
+          </Route>
+        )));
+      return list;
+    }, []);
   }
 
   render() {
     const { navigatorConfig } = this.props;
-  
-    return (
-      <Switch>
-        {this.renderScreen(navigatorConfig.mainPage, true)}
-        {
-          navigatorConfig.groups.reduce((list: JSX.Element[], { children }, groupId) => {
-            list.push(...children.map((pageConfig: PageConfig, pageId): JSX.Element =>
-              this.renderScreen(pageConfig)
-            ));
 
-            return list;
-          }, [])
-        }
-      </Switch>
-    );
+    return this.renderGroups(navigatorConfig);
   }
 }
 
