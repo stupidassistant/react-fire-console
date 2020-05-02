@@ -2,7 +2,7 @@ import * as React from 'react';
 import clsx from 'clsx';
 import { RouteComponentProps, withRouter, Link } from "react-router-dom";
 
-import { NavigatorConfig } from '../..';
+import { NavigatorConfig, GroupConfig } from '../..';
 
 import { createStyles, Theme, withStyles, WithStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
@@ -42,10 +42,6 @@ const styles = (theme: Theme) =>
       boxShadow: '0 -1px 0 #404854 inset',
       padding: 0
     },
-    firebase: {
-      fontSize: 24,
-      color: theme.palette.common.white,
-    },
     itemActiveItem: {
       color: '#4fc3f7',
     },
@@ -73,63 +69,73 @@ function Navigator(props: NavigatorProps) {
     <Drawer variant="permanent" {...other}>
       <List disablePadding>
         <ListItem className={clsx(classes.logo, classes.itemCategory)}>
-          {navigatorConfig.logo}
+          {navigatorConfig.branding.logo || navigatorConfig.branding.text}
         </ListItem>
-        <ListItem
-          component={Link}
-          to={'/'} 
-          onClick={toggleDraw}
-          className={clsx(classes.item, classes.itemCategory)}
-        >
-          <ListItemIcon className={classes.itemIcon}>
-            {navigatorConfig.mainPage.icon}
-          </ListItemIcon>
-          <ListItemText
-            classes={{
-              primary: classes.itemPrimary,
-            }}
-          >
-            {navigatorConfig.mainPage.id}
-          </ListItemText>
-        </ListItem>
-        {navigatorConfig.groups.map(({ id, children }) => (
-          <React.Fragment key={id}>
-            <ListItem className={classes.categoryHeader}>
-              <ListItemText
-                classes={{
-                  primary: classes.categoryHeaderPrimary,
-                }}
-              >
-                {id}
-              </ListItemText>
-            </ListItem>
-            {children.map(({ id: childId, icon, uri }) => (
-              <ListItem
-                button
-                key={childId}
-                component={Link}
-                to={uri}
-                onClick={(e: any) => {
-                  if (history.location.pathname.indexOf(uri) == 0)
-                    e.preventDefault();
-                  else if (toggleDraw)
-                    toggleDraw()
-                }}
-                className={clsx(classes.item, history.location.pathname.indexOf(uri) == 0 && classes.itemActiveItem)}
-              >
-                <ListItemIcon className={classes.itemIcon}>{icon}</ListItemIcon>
-                <ListItemText
-                  classes={{
-                    primary: classes.itemPrimary,
-                  }}
+        {navigatorConfig.groups.map((groupConfig: GroupConfig, id: number) => {
+          switch (groupConfig.type) {
+            case "page":
+              return (
+                <ListItem
+                  component={Link}
+                  to={groupConfig.uri} 
+                  onClick={toggleDraw}
+                  className={clsx(classes.item, classes.itemCategory)}
                 >
-                  {childId}
-                </ListItemText>
-              </ListItem>
-            ))}
-            <Divider className={classes.divider} />
-          </React.Fragment>
-        ))}
+                  <ListItemIcon className={classes.itemIcon}>
+                    {groupConfig.icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    classes={{
+                      primary: classes.itemPrimary,
+                    }}
+                  >
+                    {groupConfig.name}
+                  </ListItemText>
+                </ListItem>
+              );
+            case "group":
+              return (
+                <React.Fragment key={id}>
+                  <ListItem className={classes.categoryHeader}>
+                    <ListItemText
+                      classes={{
+                        primary: classes.categoryHeaderPrimary,
+                      }}
+                    >
+                      {groupConfig.name}
+                    </ListItemText>
+                  </ListItem>
+                  {groupConfig.children.map(({uri, name, icon}, key: number) => (
+                    <ListItem
+                      key={key}
+                      button
+                      component={Link}
+                      to={uri}
+                      onClick={(e: any) => {
+                        if (history.location.pathname.indexOf(uri) == 0)
+                          e.preventDefault();
+                        else if (toggleDraw)
+                          toggleDraw()
+                      }}
+                      className={clsx(classes.item, history.location.pathname.indexOf(uri) == 0 && classes.itemActiveItem)}
+                    >
+                      <ListItemIcon className={classes.itemIcon}>
+                        {icon}
+                      </ListItemIcon>
+                      <ListItemText
+                        classes={{
+                          primary: classes.itemPrimary,
+                        }}
+                      >
+                        {name}
+                      </ListItemText>
+                    </ListItem>
+                  ))}
+                  <Divider className={classes.divider} />
+                </React.Fragment>
+              );
+          }
+        })}
       </List>
     </Drawer>
   );

@@ -45,8 +45,8 @@ class Paperbase extends React.Component<PaperbaseProps, State> {
   render() {
     const { classes, navigatorConfig } = this.props;
 
-    if (!navigatorConfig.auth.signedIn && navigatorConfig.auth.autoRedirect)
-      return <Redirect to={navigatorConfig.auth.autoRedirect} />
+    if (!navigatorConfig.auth.isSignedIn && navigatorConfig.auth.redirectIfNotSignedIn)
+      return <Redirect to={navigatorConfig.auth.redirectIfNotSignedIn} />
   
     return (
       <Router>

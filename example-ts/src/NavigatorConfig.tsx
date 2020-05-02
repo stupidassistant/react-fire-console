@@ -13,40 +13,45 @@ import HomeIcon from '@material-ui/icons/Home';
 import PhonelinkSetupIcon from '@material-ui/icons/PhonelinkSetup';
 
 const DefaultNavigatorConfig: NavigatorConfig = {
-  logo: <img src={'https://dummyimage.com/256x100/fff/aaa'} width='100%' />,
-  mainPage: {
-    id: 'Project Overview',
-    icon: <HomeIcon />,
-    uri: '/',
-    contents: {
-      tabbed: false,
-      header: {
-        thin: true,
-        transparent: true,
-        docsUri: 'https://github.com/stupidassistant/react-fire-console'
-      }
+  branding: {
+    text: "Default Logo",
+    logo: <img src={'https://dummyimage.com/256x100/fff/aaa'} alt='Default Logo' width='100%' />
+  },
+  mainBar: {
+    dropdown: {
+      options: {
+        0: "Profile 1"
+      },
+      placeholder: 'Select Main Profile'
     }
   },
   auth: {
-    signedIn: true,
-    imageURL: 'https://avatars1.githubusercontent.com/u/63911125?s=200&v=4',
-    username: 'The Stupid Assistant',
-    href: 'https://github.com/stupidassistant/react-fire-console'
+    isSignedIn: false
   },
   groups: [
     {
-      id: 'Develop',
+      name: 'Project Overview',
+      type: 'page',
+      uri: '/',
+      icon: <HomeIcon />,
+      pageConfig: {
+        tabbed: false
+      }
+    },
+    {
+      name: 'Develop',
+      type: 'group',
       children: [
         {
-          id: 'Authentication',
-          icon: <PeopleIcon />,
+          name: 'Authentication',
           uri: '/authentication',
-          contents: {
+          icon: <PeopleIcon />,
+          pageConfig: {
             tabbed: true,
             header: {
-              title: 'Authentication'
+              title: "Authentication",
             },
-            rootRedirectsTo: '/users',
+            mainTab: 'Users',
             tabs: [
               {
                 label: "Users",
@@ -68,13 +73,15 @@ const DefaultNavigatorConfig: NavigatorConfig = {
           }
         },
         {
-          id: 'Database',
-          icon: <DnsRoundedIcon />,
+          name: 'Database',
           uri: '/database',
-          contents: {
+          icon: <DnsRoundedIcon />,
+          pageConfig: {
             tabbed: true,
-            header: {title: 'Database'},
-            rootRedirectsTo: '/data',
+            header: {
+              title: "Database",
+            },
+            mainTab: 'Data',
             tabs: [
               {
                 label: "Data",
@@ -96,13 +103,15 @@ const DefaultNavigatorConfig: NavigatorConfig = {
           }
         },
         {
-          id: 'Storage',
-          icon: <PermMediaOutlinedIcon />,
+          name: 'Storage',
           uri: '/storage',
-          contents: {
+          icon: <PermMediaOutlinedIcon />,
+          pageConfig: {
             tabbed: true,
-            header: {title: 'Storage'},
-            rootRedirectsTo: '/files',
+            header: {
+              title: "Storage",
+            },
+            mainTab: 'Files',
             tabs: [
               {
                 label: "Files",
@@ -120,13 +129,15 @@ const DefaultNavigatorConfig: NavigatorConfig = {
           }
         },
         {
-          id: 'Hosting',
-          icon: <PublicIcon />,
+          name: 'Hosting',
           uri: '/hosting',
-          contents: {
+          icon: <PublicIcon />,
+          pageConfig: {
             tabbed: true,
-            header: {title: 'Hosting'},
-            rootRedirectsTo: '/main',
+            header: {
+              title: "Hosting",
+            },
+            mainTab: 'Dashboard',
             tabs: [
               {
                 label: "Dashboard",
@@ -137,16 +148,18 @@ const DefaultNavigatorConfig: NavigatorConfig = {
                 uri: '/usage'
               }
             ]
-        }
+          }
         },
         {
-          id: 'Functions',
-          icon: <SettingsEthernetIcon />,
+          name: 'Functions',
           uri: '/functions',
-          contents: {
+          icon: <SettingsEthernetIcon />,
+          pageConfig: {
             tabbed: true,
-            header: {title: 'Functions'},
-            rootRedirectsTo: '/list',
+            header: {
+              title: "Functions",
+            },
+            mainTab: 'Dashboard',
             tabs: [
               {
                 label: "Dashboard",
@@ -168,72 +181,58 @@ const DefaultNavigatorConfig: NavigatorConfig = {
           }
         },
         {
-          id: 'ML Kit',
-          icon: <SettingsInputComponentIcon />,
+          name: 'ML Kit',
           uri: '/ml',
-          contents: {
-            tabbed: true,
-            header: { title: 'ML Kit' },
-            rootRedirectsTo: '/root',
-            tabs: [
-              {
-                label: "Root",
-                uri: '/root'
-              }
-            ]
+          icon: <SettingsInputComponentIcon />,
+          pageConfig: {
+            tabbed: false
           }
         }
       ]
     },
     {
-      id: 'Quality',
+      name: 'Quality',
+      type: 'group',
       children: [
         {
-          id: 'Crashlytics',
-          icon: <SettingsIcon />,
+          name: 'Crashlytics',
           uri: '/crashlytics',
-          contents: {
-            tabbed: true,
-            header: {title: 'Crashlytics'},
-            rootRedirectsTo: '/root',
-            tabs: [
-              {
-                label: "Root",
-                uri: '/root'
-              }
-            ]
+          icon: <SettingsIcon />,
+          pageConfig: {
+            tabbed: false,
+            header: {
+              title: "Crashlytics",
+            }
           }
         },
         {
-          id: 'Performance',
-          icon: <TimerIcon />,
+          name: 'Performance',
           uri: '/performance',
-          contents: {
-            tabbed: true,
-            header: {title: 'Performance'},
-            rootRedirectsTo: '/root',
-            tabs: [
-              {
-                label: "Root",
-                uri: '/root'
-              }
-            ]
+          icon: <TimerIcon />,
+          pageConfig: {
+            tabbed: false,
+            header: {
+              title: "Performance",
+              docsURI: '/',
+              helpURI: '/'
+            }
           }
         },
         {
-          id: 'Test Lab',
-          icon: <PhonelinkSetupIcon />,
+          name: 'Test Lab',
           uri: '/testlab',
-          contents: {
-            tabbed: true,
-            header: {title: 'Test Lab'},
-            rootRedirectsTo: '/root',
-            tabs: [
-              {
-                label: "Root",
-                uri: '/root'
-              }
-            ]
+          icon: <PhonelinkSetupIcon />,
+          pageConfig: {
+            tabbed: false,
+            header: {
+              title: "Test Lab",
+              additionalButtons: [
+                {
+                  label: "Options",
+                  uri: '/'
+                }
+              ]
+            }
           }
         }
       ]
