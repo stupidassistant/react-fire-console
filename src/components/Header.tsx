@@ -14,6 +14,10 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import Box from '@material-ui/core/Box';
+
 const lightColor = 'rgba(255, 255, 255, 0.7)';
 
 const styles = (theme: Theme) =>
@@ -26,7 +30,7 @@ const styles = (theme: Theme) =>
     },
     button: {
       borderColor: lightColor,
-    },
+    }
   });
 
 interface HeaderProps extends WithStyles<typeof styles> {
@@ -49,9 +53,45 @@ function Header(props: HeaderProps) {
           <Toolbar>
             <Grid container alignItems="center" spacing={1}>
               <Grid item xs>
-                <Typography color="inherit" variant="h5" component="h1">
-                  {pageConfig.header.title || "Default Title"}
-                </Typography>
+                <Box display='flex' flexDirection='row'>
+                  <Typography color="inherit" variant="h5" component="h1">
+                    {pageConfig.header.title || "Default Title"}
+                  </Typography>
+                  {pageConfig.header.dropdown && (
+                    <Select
+                      value={pageConfig.header.dropdown.value || ""}
+                      defaultValue={pageConfig.header.dropdown.initialValue}
+                      onChange={(e: React.ChangeEvent<{value: string|number}>) => {
+                        if (pageConfig.header?.dropdown?.onChange != undefined)
+                          pageConfig.header.dropdown.onChange(e.target.value)
+                      }}
+                      style={{
+                        backgroundColor: 'rgba(255,255,255,0.7)',
+                        borderRadius: 50,
+                        paddingLeft: 16,
+                        paddingRight: 8,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        display:'flex',
+                        marginLeft: 16
+                      }}
+                      displayEmpty
+                      disableUnderline
+                      placeholder={pageConfig.header.dropdown.placeholder}
+                    >
+                      {pageConfig.header.dropdown.placeholder &&
+                        <MenuItem value="" disabled>
+                          {pageConfig.header.dropdown.placeholder}
+                        </MenuItem>
+                      }
+                      {
+                        Object.keys(pageConfig.header.dropdown.options).map(key => (
+                          <MenuItem value={key}>{pageConfig.header?.dropdown?.options[key]}</MenuItem>
+                        ))
+                      }
+                    </Select>
+                  )}
+                </Box>
               </Grid>
               {pageConfig.header.additionalButtons?.map(({label, uri}) => (
                 <Grid item>

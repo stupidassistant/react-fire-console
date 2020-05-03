@@ -80,6 +80,12 @@ const DefaultNavigatorConfig: NavigatorConfig = {
             tabbed: true,
             header: {
               title: "Database",
+              dropdown: {
+                options: {
+                  0: "Profile 1"
+                },
+                placeholder: 'Select Main Profile'
+              }
             },
             mainTab: 'Data',
             tabs: [
